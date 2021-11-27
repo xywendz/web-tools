@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>在线画甘特图</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,user-scalable=yes">
+
+  <link rel=stylesheet href="gantt.min.css" type="text/css">
+  <script>
+		
+	</script>
+</head>
+<body>
+<div id="workSpace" style="padding:0px; overflow-y:auto; overflow-x:hidden;border:1px solid #e5e5e5;position:relative;margin:0 0"></div>
+
+<div id="gantEditorTemplates" style="display:none;">
+<div class="__template__" type="GANTBUTTONS">
+  <!--
+  <div class="ganttButtonBar noprint">
+  	<div id="ganttNav">
+      <div class="navbar-header">
+	    <a href="(#=langFlag+'/'#)" target="_blank"><img src="res/gantt-draw.svg" align="absmiddle" style="width:52px;height:42px;"></a>
+      	<input id="fileTitleInput" value="(#=fileTitleInputDefault#)" title="(#=gantt_nav_2#)">
+      	<span id="fileTitleInputSpan"></span>
+      </div>
+  	  <div class="navbar-text navbar-right gantt-dropdown" id="exportMenu">
+	      <div class="gantt-dropdown-toggle" target="_blank">
+	      	  <div onclick="downloadGantt('gantt')"><i class="teamworkIcon">Z</i>导出</div>
+		  	  <ul class="gantt-dropdown-menu" id="exportMenuUL"><li><a onclick="downloadGantt('gantt')">GANTT</a></li><li><a onclick="downloadGantt('json')">JSON</a></li><li><a onclick="downloadGantt('png')">PNG</a></li><li><a onclick="downloadGantt('txt')">TXT</a></li><li><a onclick="downloadGantt('csv')">CSV</a></li><li><a onclick="downloadGantt('xls')">EXCEL</a></li><li><a onclick="downloadGantt('doc')">WORD</a></li></ul>
+	      </div>
+      </div>
+      <div class="navbar-text navbar-right btn-open-file">
+	      <label for="load-file"><i class="teamworkIcon">H</i>打开</label>
+	      <input type="file" name="load-file" id="load-file" accept=".gantt,.json">
+      </div>
+  	  <a class="navbar-text navbar-right" href="(#=langFlag#)/gantt" target="_blank"><i class="teamworkIcon">P</i>新建</a>
+  	</div>
+    <div class="buttons">
+      <button onclick="$('#workSpace').trigger('undo.gantt');return false;" class="button textual icon requireCanWrite" title="(#=gantt_btn_1#)"><span class="teamworkIcon">&#39;</span></button>
+      <button onclick="$('#workSpace').trigger('redo.gantt');return false;" class="button textual icon requireCanWrite" title="(#=gantt_btn_2#)"><span class="teamworkIcon">&middot;</span></button>
+      <span class="ganttButtonSeparator requireCanWrite requireCanAdd"></span>
+      <button onclick="$('#workSpace').trigger('addAboveCurrentTask.gantt');return false;" class="button textual icon requireCanWrite requireCanAdd" title="(#=gantt_btn_3#)"><span class="teamworkIcon">l</span></button>
+      <button onclick="$('#workSpace').trigger('addBelowCurrentTask.gantt');return false;" class="button textual icon requireCanWrite requireCanAdd" title="(#=gantt_btn_4#)"><span class="teamworkIcon">X</span></button>
+      <span class="ganttButtonSeparator requireCanWrite requireCanInOutdent"></span>
+      <button onclick="$('#workSpace').trigger('outdentCurrentTask.gantt');return false;" class="button textual icon requireCanWrite requireCanInOutdent" title="(#=gantt_btn_5#)"><span class="teamworkIcon">.</span></button>
+      <button onclick="$('#workSpace').trigger('indentCurrentTask.gantt');return false;" class="button textual icon requireCanWrite requireCanInOutdent" title="(#=gantt_btn_6#)"><span class="teamworkIcon">:</span></button>
+      <span class="ganttButtonSeparator requireCanWrite requireCanMoveUpDown"></span>
+      <button onclick="$('#workSpace').trigger('moveUpCurrentTask.gantt');return false;" class="button textual icon requireCanWrite requireCanMoveUpDown" title="(#=gantt_btn_7#)"><span class="teamworkIcon">k</span></button>
+      <button onclick="$('#workSpace').trigger('moveDownCurrentTask.gantt');return false;" class="button textual icon requireCanWrite requireCanMoveUpDown" title="(#=gantt_btn_8#)"><span class="teamworkIcon">j</span></button>
+      <span class="ganttButtonSeparator requireCanWrite requireCanDelete"></span>
+      <button onclick="$('#workSpace').trigger('deleteFocused.gantt');return false;" class="button textual icon delete requireCanWrite" title="(#=gantt_btn_9#)"><span class="teamworkIcon">d</span></button>
+      <span class="ganttButtonSeparator"></span>
+      <button onclick="$('#workSpace').trigger('expandAll.gantt');return false;" class="button textual icon " title="(#=gantt_btn_10#)"><span class="teamworkIcon">6</span></button>
+      <button onclick="$('#workSpace').trigger('collapseAll.gantt'); return false;" class="button textual icon " title="(#=gantt_btn_11#)"><span class="teamworkIcon">5</span></button>
+
+    <span class="ganttButtonSeparator"></span>
+      <button onclick="$('#workSpace').trigger('zoomMinus.gantt'); return false;" class="button textual icon " title="(#=gantt_btn_12#)"><span class="teamworkIcon">)</span></button>
+      <button onclick="$('#workSpace').trigger('zoomPlus.gantt');return false;" class="button textual icon " title="(#=gantt_btn_13#)"><span class="teamworkIcon">(</span></button>
+    <span class="ganttButtonSeparator"></span>
+      <button onclick="$('#workSpace').trigger('print.gantt');return false;" class="button textual icon " title="(#=gantt_btn_14#)"><span class="teamworkIcon">p</span></button>
+    <span class="ganttButtonSeparator"></span>
+      <button onclick="ge.gantt.showCriticalPath=!ge.gantt.showCriticalPath; ge.redraw();return false;" class="button textual icon requireCanSeeCriticalPath" title="(#=gantt_btn_15#)"><span class="teamworkIcon">&pound;</span></button>
+    <span class="ganttButtonSeparator requireCanSeeCriticalPath"></span>
+      <button onclick="ge.splitter.resize(.1);return false;" class="button textual icon" ><span class="teamworkIcon">F</span></button>
+      <button onclick="ge.splitter.resize(50);return false;" class="button textual icon" ><span class="teamworkIcon">O</span></button>
+      <button onclick="ge.splitter.resize(100);return false;" class="button textual icon"><span class="teamworkIcon">R</span></button>
+      <span class="ganttButtonSeparator"></span>
+      <button onclick="$('#workSpace').trigger('fullScreen.gantt');return false;" class="button textual icon" title="(#=gantt_btn_16#)" id="fullscrbtn"><span class="teamworkIcon">@</span></button>
+      <button onclick="ge.element.toggleClass('colorByStatus' );return false;" class="button textual icon" title="(#=gantt_btn_17#)"><span class="teamworkIcon">&sect;</span></button>
+    </div>
+  </div>
+  -->
+</div>
+<div class="__template__" type="TASKSEDITHEAD"><!--
+  <table class="gdfTable" id="gtTable" cellspacing="0" cellpadding="0">
+    <tr style="height:40px">
+      <th class="gdfColHeader export-ignore" style="width:35px; border-right: none"></th>
+      <th class="gdfColHeader export-ignore" style="width:25px;"></th>
+      <th class="gdfColHeader gdfResizable" style="width:80px;" title="(#=gantt_th_1#)">(#=gantt_th_1#)</th>
+      <th class="gdfColHeader gdfResizable" style="width:280px;" title="(#=gantt_th_2#)">(#=gantt_th_2#)</th>
+      <th class="gdfColHeader export-ignore" align="center" style="width:20px;" title="(#=gantt_th_3#)"><span class="teamworkIcon" style="font-size: 8px;">^</span></th>
+      <th class="gdfColHeader gdfResizable" style="width:80px;" title="(#=gantt_th_4#)">(#=gantt_th_4#)</th>
+      <th class="gdfColHeader export-ignore" align="center" style="width:20px;" title="(#=gantt_th_5#)"><span class="teamworkIcon" style="font-size: 8px;">^</span></th>
+      <th class="gdfColHeader gdfResizable" style="width:80px;" title="(#=gantt_th_6#)">(#=gantt_th_6#)</th>
+      <th class="gdfColHeader gdfResizable" style="width:60px;" title="(#=gantt_th_7#)">(#=gantt_th_7#)</th>
+      <th class="gdfColHeader gdfResizable" style="width:60px;" title="(#=gantt_th_8#)">(#=gantt_th_8#)</th>
+      <th class="gdfColHeader gdfResizable" style="width:60px;" title="(#=gantt_th_9#)">(#=gantt_th_9#)</th>
+      <th class="gdfColHeader gdfResizable" style="width:100px;" title="(#=gantt_th_10#)">(#=gantt_th_10#)</th>
+      <th class="gdfColHeader gdfResizable" style="width:1000px;text-align:left;padding-left:10px;" title="(#=gantt_th_11#)">(#=gantt_th_11#)</th>
+    </tr>
+  </table>
+  --></div>
+
+<div class="__template__" type="TASKROW"><!--
+  <tr id="tid_(#=obj.id#)" taskId="(#=obj.id#)" class="taskEditRow (#=obj.isParent()?'isParent':''#) (#=obj.collapsed?'collapsed':''#)" level="(#=level#)">
+    <th class="gdfCell edit export-ignore" align="right" style="cursor:pointer;"><span class="taskRowIndex">(#=obj.getRow()+1#)</span> <i class="teamworkIcon" style="font-size:12px;" >e</i></th>
+    <td class="gdfCell noClip export-ignore" align="center"><div class="taskStatus cvcColorSquare" status="(#=obj.status#)"></div></td>
+    <td class="gdfCell"><input type="text" name="code" readonly value="(#=obj.code?obj.code:''#)"></td>
+    <td class="gdfCell indentCell" style="padding-left:(#=obj.level*10+18#)px;">
+      <div class="exp-controller" align="center"></div>
+      <input type="text" name="name" value="(#=obj.name#)" placeholder="(#=gantt_th_2#)">
+    </td>
+    <td class="gdfCell export-ignore" align="center"><input type="checkbox" name="startIsMilestone"></td>
+    <td class="gdfCell"><input type="text" name="start"  value="" class="date"></td>
+    <td class="gdfCell export-ignore" align="center"><input type="checkbox" name="endIsMilestone"></td>
+    <td class="gdfCell"><input type="text" name="end" value="" class="date"></td>
+    <td class="gdfCell"><input type="text" name="duration" autocomplete="off" value="(#=obj.duration#)"></td>
+    <td class="gdfCell"><input type="text" name="progress" class="validated" entrytype="PERCENTILE" autocomplete="off" value="(#=obj.progress?obj.progress:''#)" (#=obj.progressByWorklog?"readOnly":""#)></td>
+    <td class="gdfCell"><input type="text" name="depends" autocomplete="off" value="(#=obj.depends#)" (#=obj.hasExternalDep?"readonly":""#)></td>
+    <td class="gdfCell"><input type="text" name="inPeople" value="(#=obj.inPeople?obj.inPeople:''#)"></td>
+    <td class="gdfCell"><input type="text" name="description" value="(#=obj.description?obj.description:''#)"></td>
+  </tr>
+  --></div>
+
+<div class="__template__" type="TASKEMPTYROW"><!--
+  <tr class="taskEditRow emptyRow" >
+    <th class="gdfCell" align="right"></th>
+    <td class="gdfCell noClip" align="center"></td>
+    <td class="gdfCell"></td>
+    <td class="gdfCell"></td>
+    <td class="gdfCell"></td>
+    <td class="gdfCell"></td>
+    <td class="gdfCell"></td>
+    <td class="gdfCell"></td>
+    <td class="gdfCell"></td>
+    <td class="gdfCell"></td>
+    <td class="gdfCell"></td>
+    <td class="gdfCell"></td>
+    <td class="gdfCell"></td>
+  </tr>
+  --></div>
+
+<div class="__template__" type="TASKBAR"><!--
+  <div class="taskBox taskBoxDiv" taskId="(#=obj.id#)" >
+    <div class="layout (#=obj.hasExternalDep?'extDep':''#)">
+      <div class="taskStatus" status="(#=obj.status#)"></div>
+      <div class="taskProgress" style="width:(#=obj.progress>100?100:obj.progress#)%; background-color:(#=obj.progress>100?'red':'rgb(153,255,51);'#);"></div>
+      <div class="milestone (#=obj.startIsMilestone?'active':''#)" ></div>
+
+      <div class="taskLabel"></div>
+      <div class="milestone end (#=obj.endIsMilestone?'active':''#)" ></div>
+    </div>
+  </div>
+  --></div>
+
+<div class="__template__" type="CHANGE_STATUS"><!--
+    <div class="taskStatusBox">
+    <div class="taskStatus cvcColorSquare" status="STATUS_WAITING" title="(#=gantt_th_12_1#)"></div>
+    <div class="taskStatus cvcColorSquare" status="STATUS_ACTIVE" title="(#=gantt_th_12_2#)"></div>
+    <div class="taskStatus cvcColorSquare" status="STATUS_DONE" title="(#=gantt_th_12_3#)"></div>
+    <div class="taskStatus cvcColorSquare" status="STATUS_SUSPENDED" title="(#=gantt_th_12_4#)"></div>
+    <div class="taskStatus cvcColorSquare" status="STATUS_FAILED" title="(#=gantt_th_12_5#)"></div>
+    <div class="taskStatus cvcColorSquare" status="STATUS_UNDEFINED" title="(#=gantt_th_12_6#)"></div>
+    </div>
+  --></div>
+
+<div class="__template__" type="TASK_EDITOR"><!--
+  <div class="ganttTaskEditor">
+    <h2 class="taskData">(#=gantt_edit_title#)</h2>
+    <table  cellspacing="1" cellpadding="5" width="100%" class="taskData table" border="0">
+          <tr>
+	        <td width="200" style="height: 80px"  valign="top">
+	          <label for="code">(#=gantt_th_1#)</label><br>
+	          <input type="text" name="code" id="code" value="" size=15 class="formElements" autocomplete='off' maxlength=255 style='width:100%' oldvalue="1">
+	        </td>
+	        <td colspan="3" valign="top"><label for="name" class="required">(#=gantt_th_2#)</label><br><input type="text" name="name" id="name"class="formElements" autocomplete='off' maxlength=255 style='width:100%' value="" required="true" oldvalue="1"></td>
+          </tr>
+
+      <tr class="dateRow">
+        <td nowrap="">
+          <div style="position:relative">
+            <input type="checkbox" id="startIsMilestone" name="startIsMilestone" value="yes"><label for="startIsMilestone">(#=gantt_th_3#)</label>&nbsp;
+            <br><input type="text" name="start" id="start" size="8" class="formElements dateField validated date" autocomplete="off" maxlength="255" value="" oldvalue="1" entrytype="DATE">
+            <span title="calendar" id="starts_inputDate" class="teamworkIcon openCalendar" onclick="$(this).dateField({inputField:$(this).prevAll(':input:first'),isSearchField:false});">m</span>          </div>
+        </td>
+        <td nowrap="">
+          <input type="checkbox" id="endIsMilestone" name="endIsMilestone" value="yes"><label for="endIsMilestone">(#=gantt_th_5#)</label>&nbsp;
+          <br><input type="text" name="end" id="end" size="8" class="formElements dateField validated date" autocomplete="off" maxlength="255" value="" oldvalue="1" entrytype="DATE">
+          <span title="calendar" id="ends_inputDate" class="teamworkIcon openCalendar" onclick="$(this).dateField({inputField:$(this).prevAll(':input:first'),isSearchField:false});">m</span>
+        </td>
+        <td nowrap="">
+          <label for="duration" class=" ">(#=gantt_th_7#)</label><br>
+          <input type="text" name="duration" id="duration" size="4" class="formElements validated durationdays" title="(#=gantt_th_7_tip#)" autocomplete="off" maxlength="255" value="" oldvalue="1" entrytype="DURATIONDAYS">&nbsp;
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <label for="status" class=" ">(#=gantt_th_12#)</label><br>
+          <select id="status" name="status" class="taskStatus" status="(#=obj.status#)"  onchange="$(this).attr('STATUS',$(this).val());">
+            <option value="STATUS_WAITING" class="taskStatus" status="STATUS_WAITING" >(#=gantt_th_12_1#)</option>
+            <option value="STATUS_ACTIVE" class="taskStatus" status="STATUS_ACTIVE" >(#=gantt_th_12_2#)</option>
+            <option value="STATUS_DONE" class="taskStatus" status="STATUS_DONE" >(#=gantt_th_12_3#)</option>
+            <option value="STATUS_SUSPENDED" class="taskStatus" status="STATUS_SUSPENDED" >(#=gantt_th_12_4#)</option>
+            <option value="STATUS_FAILED" class="taskStatus" status="STATUS_FAILED" >(#=gantt_th_12_5#)</option>
+            <option value="STATUS_UNDEFINED" class="taskStatus" status="STATUS_UNDEFINED" >(#=gantt_th_12_6#)</option>
+          </select>
+        </td>
+        <td valign="top" nowrap>
+          <label>(#=gantt_th_8#)</label><br>
+          <input type="text" name="progress" id="progress" size="7" class="formElements validated percentile" autocomplete="off" maxlength="255" value="" oldvalue="1" entrytype="PERCENTILE">
+        </td>
+        <td>
+          <label for="duration" class=" ">(#=gantt_th_10#)</label><br>
+          <input type="text" name="inPeople" id="inPeople" class="formElements validated" autocomplete="off">&nbsp;
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="4">
+          <label for="description">(#=gantt_th_11#)</label><br>
+          <textarea rows="3" cols="30" id="description" name="description" class="formElements" style="width:100%"></textarea>
+        </td>
+      </tr>
+    </table>
+
+  <div style="text-align: right; padding-top: 20px">
+    <span id="saveButton" class="button first" onClick="$(this).trigger('saveFullEditor.gantt');">(#=gantt_edit_save#)</span>
+  </div>
+
+  </div>
+  --></div>
+
+<div class="__template__" type="ASSIGNMENT_ROW"><!--
+  <tr taskId="(#=obj.task.id#)" assId="(#=obj.assig.id#)" class="assigEditRow" >
+    <td ><select name="resourceId"  class="formElements" (#=obj.assig.id.indexOf("tmp_")==0?"":"disabled"#) ></select></td>
+    <td ><select type="select" name="roleId"  class="formElements"></select></td>
+    <td ><input type="text" name="effort" value="(#=getMillisInHoursMinutes(obj.assig.effort)#)" size="5" class="formElements"></td>
+    <td align="center"><span class="teamworkIcon delAssig del" style="cursor: pointer">d</span></td>
+  </tr>
+  --></div>
+
+<div class="__template__" type="RESOURCE_EDITOR"><!--
+  <div class="resourceEditor" style="padding: 5px;">
+
+    <h2>Project team</h2>
+    <table  cellspacing="1" cellpadding="0" width="100%" id="resourcesTable">
+      <tr>
+        <th style="width:100px;">name</th>
+        <th style="width:30px;" id="addResource"><span class="teamworkIcon" style="cursor: pointer">+</span></th>
+      </tr>
+    </table>
+
+    <div style="text-align: right; padding-top: 20px"><button id="resSaveButton" class="button big">Save</button></div>
+  </div>
+  --></div>
+
+<div class="__template__" type="RESOURCE_ROW"><!--
+  <tr resId="(#=obj.id#)" class="resRow" >
+    <td ><input type="text" name="name" value="(#=obj.name#)" style="width:100%;" class="formElements"></td>
+    <td align="center"><span class="teamworkIcon delRes del" style="cursor: pointer">d</span></td>
+  </tr>
+  --></div>
+
+<div class="__template__" type="SAVE_POP"><!--
+  <div style="padding: 5px;">
+    <h2>(#=gantt_edit_save#)</h2>
+    <table>
+    	<tr>
+			<td><input id="saveInput" value="(#=fileTitleInputDefault#)"></td>
+			<td>
+				<select id="saveType">
+					<option value="gantt">.gantt</option>
+					<option value="json">.json</option>
+					<option value="png">.png</option>
+					<option value="txt">.txt</option>
+					<option value="csv">.csv</option>
+					<option value="xls">.xls</option>
+					<option value="doc">.doc</option>
+				</select>
+			</td>
+	</table>
+    <div style="text-align: right; padding-top: 20px"><button id="saveBtn" class="button big">(#=gantt_edit_save#)</button></div>
+  </div>
+  --></div>
+  
+</div>
+
+<script src="gantt.min.js"></script>
+</body>
+</html>
